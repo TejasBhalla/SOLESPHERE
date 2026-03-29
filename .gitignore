@@ -1,0 +1,38 @@
+# Dependency directories (handles root, client, and server)
+node_modules/
+**/node_modules/
+
+# Environment variables (Critical for security)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Production Build artifacts
+build/
+dist/
+client/build/
+client/dist/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional: Testing coverage
+coverage/
