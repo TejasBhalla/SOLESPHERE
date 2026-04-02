@@ -43,8 +43,8 @@ export const createProduct = async (req, res) => {
             description,
             price,
             category,
-            image: cloudinaryResponse?.secure_url || '',
-            cloudinary_id: cloudinaryResponse?.public_id || ''
+            image: cloudinaryResponse?.secure_url || null,
+            cloudinary_id: cloudinaryResponse?.public_id || null
         })
         return res.status(201).json({ product })
     } catch (error) {

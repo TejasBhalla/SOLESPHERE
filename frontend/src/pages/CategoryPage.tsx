@@ -8,6 +8,10 @@ const CategoryPage = () => {
     const fetchCategoryProducts = useUserStore((state)=> state.fetchCategoryProducts)
     const products = useUserStore((state)=> state.products);
     const isLoading = useUserStore((state)=> state.isLoading);
+    const addtocart = useUserStore((state)=> state.addtocart)
+    const removefromcart = useUserStore((state)=> state.removefromcart)
+    const changeproductquantity = useUserStore((state)=> state.changeproductquantity)
+    const cart = useUserStore((state)=> state.cart)
   
 
   const { name } = useParams();
@@ -73,9 +77,29 @@ const CategoryPage = () => {
             <p>From &nbsp; </p>
             <p className="text-red-500 font-medium"> ₹{item.price}</p>
             </div>
-            <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} className="mt-3 px-4 py-2 text-white rounded-xl bg-[#c2b090] hover:bg-gray-800">
-              Add to Cart
-            </motion.button>
+            {/* Cart controls */}
+            {(() => {
+              const cartItem = cart && cart.find((ci) => {
+                if (!ci || !ci.id) return false
+                const cid = typeof ci.id === 'object' ? (ci.id._id || ci.id.id || '') : String(ci.id)
+                return String(cid) === String(item._id)
+              })
+              if (cartItem) {
+                return (
+                  <div className="mt-3 flex items-center gap-2">
+                    <button type="button" onClick={() => changeproductquantity(item._id, 'dec')} className="px-3 py-1 bg-gray-200 rounded">-</button>
+                    <span className="px-2">{cartItem.quantity}</span>
+                    <button type="button" onClick={() => changeproductquantity(item._id, 'inc')} className="px-3 py-1 bg-gray-200 rounded">+</button>
+                    <button type="button" onClick={() => removefromcart(item._id)} className="ml-3 text-sm text-red-600">Remove</button>
+                  </div>
+                )
+              }
+              return (
+                <motion.button type="button" onClick={() => addtocart(item._id)} whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} className="mt-3 px-4 py-2 text-white rounded-xl bg-[#c2b090] hover:bg-gray-800">
+                  Add to Cart
+                </motion.button>
+              )
+            })()}
           </motion.div>
         ))}
       </motion.div>

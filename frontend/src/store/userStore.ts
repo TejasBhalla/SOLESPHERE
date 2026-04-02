@@ -217,43 +217,43 @@ export const useUserStore = create((set) => ({
   },
 
   addtocart: async (productId) => {
-    set({ isLoading: true, error: null })
+    set({ error: null })
     try {
       const res = await api.post('/cart', { productId })
       const data = res.data?.items || []
-      set({ cart: data, isLoading: false })
+      set({ cart: data })
       return { success: true, data }
     } catch (error) {
       const message = getErrorMessage(error)
-      set({ isLoading: false, error: message })
+      set({ error: message })
       return { success: false, message }
     }
   },
 
   removefromcart: async (productId) => {
-    set({ isLoading: true, error: null })
+    set({ error: null })
     try {
       const res = await api.delete('/cart', { data: { productId } })
       const data = res.data?.items || []
-      set({ cart: data, isLoading: false })
+      set({ cart: data })
       return { success: true, data }
     } catch (error) {
       const message = getErrorMessage(error)
-      set({ isLoading: false, error: message })
+      set({ error: message })
       return { success: false, message }
     }
   },
 
   changeproductquantity: async (productId, action) => {
-    set({ isLoading: true, error: null })
+    set({ error: null })
     try {
       const res = await api.patch('/cart', { productId, action })
       const data = res.data?.items || []
-      set({ cart: data, isLoading: false })
+      set({ cart: data })
       return { success: true, data }
     } catch (error) {
       const message = getErrorMessage(error)
-      set({ isLoading: false, error: message })
+      set({ error: message })
       return { success: false, message }
     }
   },
