@@ -12,10 +12,19 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const getprofile = useUserStore((state) => state.getprofile);
+  const cart = useUserStore((state) => state.cart);
+  const getcart = useUserStore((state) => state.getcart);
+  const changeproductquantity = useUserStore((state) => state.changeproductquantity);
+  const removefromcart = useUserStore((state) => state.removefromcart);
 
   useEffect(() => {
     getprofile();
+    getcart();
   }, [getprofile]);
+
+  const [showCart, setShowCart] = useState(false);
+
+  const cartCount = (cart || []).reduce((s, it) => s + (it.quantity || 0), 0);
 
   return (
     <nav className='z-50 sticky top-0 w-full bg-[#fcfbf7] border-b border-gray-100 shadow-sm'>
@@ -75,12 +84,14 @@ const Navbar = () => {
                 </Link>
               )}
               
-              <Link to="/cart" className="relative p-2">
-                <IoCartOutline className='text-2xl md:text-2xl' />
-                <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  0
-                </span>
-              </Link>
+              <div className="relative">
+                <Link to="/cart">
+                <button onClick={() => setShowCart((v) => !v)} className="relative p-2">
+                  <IoCartOutline className='text-2xl md:text-2xl' />
+                  <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">{cartCount}</span>
+                </button>
+                </Link>
+              </div>
 
               {user?.role === 'admin' && (
                 <Link to="/dashboard" className="hidden lg:block">
