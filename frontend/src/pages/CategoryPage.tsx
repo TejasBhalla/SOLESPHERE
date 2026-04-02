@@ -44,33 +44,22 @@ const CategoryPage = () => {
   };
 
   return (
-    <motion.div
-      className="p-10 bg-[#fcfbf7] min-h-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-    >
+    <div className="p-10 bg-[#fcfbf7] min-h-screen">
       <h1 className="text-4xl font-bold mb-6 capitalize font-[Montserrat]">
         {name} Products
       </h1>
 
-      <motion.div
-        className="grid grid-cols-4 gap-6 m"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
+      <motion.div className="grid grid-cols-4 gap-6" variants={container} initial="hidden" animate="show">
         {products.map((item) => (
           <motion.div
             key={item._id}
+            layout
             variants={card}
-            whileHover={{
-              scale: 1.05,
-              y: -5,
-              boxShadow: "0px 10px 25px rgba(0,0,0,0.15)"
-            }}
-            transition={{ type: "spring", stiffness: 200, damping: 12 }}
-            className="p-4 bg-[#f5f2eb]  shadow cursor-pointer"
+            initial="hidden"
+            animate="show"
+            whileHover={{ scale: 1.05, y: -5, boxShadow: '0px 10px 25px rgba(0,0,0,0.15)' }}
+            transition={{ type: 'spring', stiffness: 200, damping: 12 }}
+            className="p-4 bg-[#f5f2eb] shadow cursor-pointer"
           >
             <motion.img
               src={item.image}
@@ -84,17 +73,13 @@ const CategoryPage = () => {
             <p>From &nbsp; </p>
             <p className="text-red-500 font-medium"> ₹{item.price}</p>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.05 }}
-              className="mt-3 px-4 py-2 bg-[#] text-white rounded-xl bg-[#c2b090] hover:bg-gray-800"
-            >
+            <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} className="mt-3 px-4 py-2 text-white rounded-xl bg-[#c2b090] hover:bg-gray-800">
               Add to Cart
             </motion.button>
           </motion.div>
         ))}
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
