@@ -7,6 +7,7 @@ import Navbar from './components/Navbar'
 import DashBoard from './pages/DashBoard'
 import { Toaster } from 'sonner'
 import CategoryPage from './pages/CategoryPage'
+import ItemPage from './pages/ItemPage'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path='/login' element={<LoginPage></LoginPage>}></Route>
       <Route path='/dashboard' element={<DashBoard></DashBoard>}></Route>
       <Route path='/category/:name' element={<CategoryPage></CategoryPage>}></Route>
+      <Route path='/item/:id' element={<ItemPage></ItemPage>}></Route>
     </Routes>
     
    

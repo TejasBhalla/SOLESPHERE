@@ -1,108 +1,128 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useUserStore } from '@/store/userStore'
 import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useUserStore } from '@/store/userStore';
+import { Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 
-const CategoryPage = () => {
-    const fetchCategoryProducts = useUserStore((state)=> state.fetchCategoryProducts)
-    const products = useUserStore((state)=> state.products);
-    const isLoading = useUserStore((state)=> state.isLoading);
-    const addtocart = useUserStore((state)=> state.addtocart)
-    const removefromcart = useUserStore((state)=> state.removefromcart)
-    const changeproductquantity = useUserStore((state)=> state.changeproductquantity)
-    const cart = useUserStore((state)=> state.cart)
-  
-
-  const { name } = useParams();
-  useEffect(() => {
-      const FetchCategoryProducts = async () => {
-        await fetchCategoryProducts(name);
-      }
-      FetchCategoryProducts();
-    }, [name])
-    if (isLoading) {
-    return <h1 className="p-10 text-3xl font-bold">Loading...</h1>;
-  }
-  console.log("🛒 Products in UI:", products);
-
-  // Animation Variants
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const card = {
-    hidden: { opacity: 0, y: 30 },
-    show: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    },
-  };
+const CartControl = ({ item, cartItem, methods }: { item: any; cartItem: any; methods: any }) => {
+  const { addtocart, removefromcart, changeproductquantity } = methods;
 
   return (
-    <div className="p-10 bg-[#fcfbf7] min-h-screen">
-      <h1 className="text-4xl font-bold mb-6 capitalize font-[Montserrat]">
-        {name} Products
-      </h1>
+    <div className="absolute bottom-4 right-4 left-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
+      {cartItem ? (
+        <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-between bg-white/95 backdrop-blur-sm p-1.5 rounded-xl shadow-xl border border-gray-100">
+          <div className="flex items-center gap-3 ml-1">
+            <button onClick={() => changeproductquantity(item._id, 'dec')} className="p-1 hover:text-red-500 transition-colors"><Minus size={16} /></button>
+            <span className="text-sm font-bold text-slate-800">{cartItem.quantity}</span>
+            <button onClick={() => changeproductquantity(item._id, 'inc')} className="p-1 hover:text-green-600 transition-colors"><Plus size={16} /></button>
+          </div>
+          <button onClick={() => removefromcart(item._id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors border-l border-gray-100 ml-2"><Trash2 size={16} /></button>
+        </div>
+      ) : (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addtocart(item._id);
+          }}
+          className="w-full flex items-center justify-center gap-2 py-3 bg-slate-900 text-white rounded-xl text-sm font-semibold hover:bg-[#b09d7a] transition-all duration-300 shadow-2xl active:scale-95"
+        >
+          <ShoppingBag size={16} /> Add to Cart
+        </button>
+      )}
+    </div>
+  );
+};
 
-      <motion.div className="grid grid-cols-4 gap-6" variants={container} initial="hidden" animate="show">
-        {products.map((item) => (
-          <motion.div
-            key={item._id}
-            layout
-            variants={card}
-            initial="hidden"
-            animate="show"
-            whileHover={{ scale: 1.05, y: -5, boxShadow: '0px 10px 25px rgba(0,0,0,0.15)' }}
-            transition={{ type: 'spring', stiffness: 200, damping: 12 }}
-            className="p-4 bg-[#f5f2eb] shadow cursor-pointer"
-          >
-            <motion.img
-              src={item.image}
-              className="w-full h-60 object-cover rounded-xl"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            />
+const CategoryPage = () => {
+  const fetchCategoryProducts = useUserStore((state: any) => state.fetchCategoryProducts);
+  const products = useUserStore((state: any) => state.products);
+  const isLoading = useUserStore((state: any) => state.isLoading);
+  const cart = useUserStore((state: any) => state.cart);
+  const addtocart = useUserStore((state: any) => state.addtocart);
+  const removefromcart = useUserStore((state: any) => state.removefromcart);
+  const changeproductquantity = useUserStore((state: any) => state.changeproductquantity);
+  const methods = { addtocart, removefromcart, changeproductquantity };
+  const { name } = useParams();
+  const navigate = useNavigate();
 
-            <h2 className="mt-4 text-xl font-semibold">{item.name}</h2>
-            <div className="flex">
-            <p>From &nbsp; </p>
-            <p className="text-red-500 font-medium"> ₹{item.price}</p>
-            </div>
-            {/* Cart controls */}
-            {(() => {
-              const cartItem = cart && cart.find((ci) => {
-                if (!ci || !ci.id) return false
-                const cid = typeof ci.id === 'object' ? (ci.id._id || ci.id.id || '') : String(ci.id)
-                return String(cid) === String(item._id)
-              })
-              if (cartItem) {
-                return (
-                  <div className="mt-3 flex items-center gap-2">
-                    <button type="button" onClick={() => changeproductquantity(item._id, 'dec')} className="px-3 py-1 bg-gray-200 rounded">-</button>
-                    <span className="px-2">{cartItem.quantity}</span>
-                    <button type="button" onClick={() => changeproductquantity(item._id, 'inc')} className="px-3 py-1 bg-gray-200 rounded">+</button>
-                    <button type="button" onClick={() => removefromcart(item._id)} className="ml-3 text-sm text-red-600">Remove</button>
-                  </div>
-                )
-              }
-              return (
-                <motion.button type="button" onClick={() => addtocart(item._id)} whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} className="mt-3 px-4 py-2 text-white rounded-xl bg-[#c2b090] hover:bg-gray-800">
-                  Add to Cart
-                </motion.button>
-              )
-            })()}
+  useEffect(() => { fetchCategoryProducts(name); }, [name, fetchCategoryProducts]);
+
+  if (isLoading) return (
+    <div className="flex items-center justify-center min-h-screen bg-[#fcfbf7]">
+      <div className="w-10 h-10 border-2 border-[#c2b090] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  return (
+    <div className="bg-[#fcfbf7] min-h-screen font-sans selection:bg-[#c2b090]/30">
+      <div className="max-w-7xl mx-auto px-6 py-12 md:px-10">
+        
+        <header className="mb-12">
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+            <p className="text-xs uppercase tracking-[0.4em] text-[#a68d60] font-bold mb-2">Essential Collection</p>
+            <h1 className="text-4xl md:text-5xl font-bold capitalize text-slate-900 tracking-tight font-[Montserrat]">{name}</h1>
           </motion.div>
-        ))}
-      </motion.div>
+        </header>
+
+        <motion.div 
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {products.map((item) => {
+              const cartItem = cart?.find((ci: any) => String(ci.id?._id || ci.id) === String(item._id));
+
+              return (
+                <motion.div
+                  key={item._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  onClick={() => navigate(`/item/${item._id}`)}
+                  className="group relative cursor-pointer bg-white rounded-[2rem] border border-gray-100 hover:border-transparent transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
+                >
+                  {/* Image Section */}
+                  <div className="relative aspect-[1/1.2] m-3 overflow-hidden rounded-[1.5rem] bg-[#f9f8f4]">
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <CartControl item={item} cartItem={cartItem} methods={methods} />
+                  </div>
+
+                  {/* Info Section */}
+                  <div className="px-6 pb-8 pt-2">
+                    <div className="flex justify-between items-start gap-2 mb-2">
+                      <h2 className="text-lg font-bold text-slate-800 leading-tight group-hover:text-[#a68d60] transition-colors">{item.name}</h2>
+                      <span className="text-lg font-bold text-slate-900">₹{item.price}</span>
+                    </div>
+                    
+                    {/* Description Section */}
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 italic">
+                      {item.description || `Handcrafted premium ${name} designed for ultimate comfort and timeless style.`}
+                    </p>
+
+                    <div className="mt-4 flex items-center gap-2">
+                      <span className="h-[1px] flex-1 bg-gray-100"></span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">Detail</span>
+                      <span className="h-[1px] flex-1 bg-gray-100"></span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        {!isLoading && !products.length && (
+          <div className="text-center py-32">
+            <ShoppingBag className="mx-auto text-gray-200 mb-4" size={48} />
+            <p className="text-gray-400 text-lg italic">We couldn't find any items in this category.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

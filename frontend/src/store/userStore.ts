@@ -19,6 +19,7 @@ export const useUserStore = create((set) => ({
   products: [],
   featuredProducts: [],
   recommendedProducts: [],
+  selectedProduct: null,
   cart: [],
   orders: [],
   isLoading: false,
@@ -127,6 +128,20 @@ export const useUserStore = create((set) => ({
       const res = await api.get(`/product/category/${category}`)
       const data = res.data?.products || []
       set({ products: data, isLoading: false })
+      return { success: true, data }
+    } catch (error) {
+      const message = getErrorMessage(error)
+      set({ isLoading: false, error: message })
+      return { success: false, message }
+    }
+  },
+
+  getProductById: async (productId) => {
+    set({ isLoading: true, selectedProduct: null, error: null })
+    try {
+      const res = await api.get(`/product/${productId}`)
+      const data = res.data?.product || null
+      set({ selectedProduct: data, isLoading: false })
       return { success: true, data }
     } catch (error) {
       const message = getErrorMessage(error)
