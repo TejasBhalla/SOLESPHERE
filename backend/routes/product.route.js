@@ -1,7 +1,7 @@
 import express from 'express';
 import Product from '../schema/product.model.js';
 import dotenv from 'dotenv';
-import {createProduct, deleteProduct, getAllProducts, getCategoryProducts, getFeaturedProducts, getRecommendedProducts, toggleFeaturedProducts} from '../controller/product.controller.js'
+import {createProduct, deleteProduct, getAllProducts, getCategoryProducts, getFeaturedProducts, getProductById, getRecommendedProducts, toggleFeaturedProducts} from '../controller/product.controller.js'
 import { adminRoute, protectRoute } from '../middleware/auth.middleware.js';
 
 dotenv.config();
@@ -14,6 +14,8 @@ router.get('/featured',getFeaturedProducts)
 router.get('/recommendations',getRecommendedProducts)
 
 router.get('/category/:category',getCategoryProducts)
+
+router.get('/:id',getProductById)
 
 router.patch('/:id',protectRoute,adminRoute,toggleFeaturedProducts)
 
