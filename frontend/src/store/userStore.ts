@@ -234,8 +234,9 @@ export const useUserStore = create((set) => ({
   addtocart: async (productId) => {
     set({ error: null })
     try {
-      const res = await api.post('/cart', { productId })
-      const data = res.data?.items || []
+      await api.post('/cart', { productId })
+      const cartRes = await api.get('/cart')
+      const data = cartRes.data?.items || []
       set({ cart: data })
       return { success: true, data }
     } catch (error) {
@@ -248,8 +249,9 @@ export const useUserStore = create((set) => ({
   removefromcart: async (productId) => {
     set({ error: null })
     try {
-      const res = await api.delete('/cart', { data: { productId } })
-      const data = res.data?.items || []
+      await api.delete('/cart', { data: { productId } })
+      const cartRes = await api.get('/cart')
+      const data = cartRes.data?.items || []
       set({ cart: data })
       return { success: true, data }
     } catch (error) {
@@ -262,8 +264,9 @@ export const useUserStore = create((set) => ({
   changeproductquantity: async (productId, action) => {
     set({ error: null })
     try {
-      const res = await api.patch('/cart', { productId, action })
-      const data = res.data?.items || []
+      await api.patch('/cart', { productId, action })
+      const cartRes = await api.get('/cart')
+      const data = cartRes.data?.items || []
       set({ cart: data })
       return { success: true, data }
     } catch (error) {

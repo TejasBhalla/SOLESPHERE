@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { IoCartOutline, IoMenuOutline, IoCloseOutline } from "react-icons/io5";
 import { IoIosSearch } from "react-icons/io";
@@ -23,6 +23,8 @@ const Navbar = () => {
   }, [getprofile]);
 
   const [showCart, setShowCart] = useState(false);
+
+  const navigate = useNavigate();
 
   const cartCount = (cart || []).reduce((s, it) => s + (it.quantity || 0), 0);
 
@@ -85,12 +87,20 @@ const Navbar = () => {
               )}
               
               <div className="relative">
-                <Link to="/cart">
-                <button onClick={() => setShowCart((v) => !v)} className="relative p-2">
+                <button
+                  onClick={() => {
+                    if (user) {
+                      navigate('/cart');
+                    } else {
+                      navigate('/login');
+                    }
+                    setShowCart((v) => !v);
+                  }}
+                  className="relative p-2"
+                >
                   <IoCartOutline className='text-2xl md:text-2xl' />
                   <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">{cartCount}</span>
                 </button>
-                </Link>
               </div>
 
               {user?.role === 'admin' && (
