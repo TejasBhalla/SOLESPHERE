@@ -1,11 +1,12 @@
 import express from 'express'
 import { adminRoute, protectRoute } from '../middleware/auth.middleware.js'
-import { createOrderSession, getAllOrders } from '../controller/order.controller.js'
+import { checkoutSuccess, createOrderSession, getAllOrders } from '../controller/order.controller.js'
 
 const router = express.Router()
 
 
-router.get("/",protectRoute,adminRoute,getAllOrders)
-router.get("/",protectRoute,createOrderSession)
+router.get("/", protectRoute, adminRoute, getAllOrders)
+router.post("/create-checkout-session", protectRoute, createOrderSession)
+router.post("/checkout-success", protectRoute, checkoutSuccess)
 
 export default router
