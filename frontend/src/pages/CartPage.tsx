@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserStore } from "@/store/userStore";
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ChevronLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const CartPage = () => {
-  const { cart, removefromcart, changeproductquantity, getcart, createordersession } = useUserStore();
+  const { cart, removefromcart, changeproductquantity, getcart } = useUserStore() as any;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,12 +13,12 @@ const CartPage = () => {
   }, [getcart]);
 
   // Helpers to normalize cart item/product shape
-  const getItemProduct = (item) => (item?.id && typeof item.id === 'object' ? item.id : item);
-  const getItemId = (item) => (item?.id?._id || item?._id || item?.id);
+  const getItemProduct = (item: any) => (item?.id && typeof item.id === 'object' ? item.id : item);
+  const getItemId = (item: any) => (item?.id?._id || item?._id || item?.id);
 
   // Calculate Subtotal
   const subtotal =
-    cart?.reduce((acc, item) => {
+    cart?.reduce((acc: number, item: any) => {
       const product = getItemProduct(item);
       const price = product?.price || 0;
       const qty = item?.quantity || 0;
@@ -63,7 +63,7 @@ const CartPage = () => {
           <div className="lg:col-span-8">
             <div className="space-y-6">
               <AnimatePresence mode="popLayout">
-                {cart.map((item) => (
+                {cart.map((item: any) => (
                   <motion.div
                     key={getItemId(item)}
                     layout
@@ -163,14 +163,7 @@ const CartPage = () => {
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.98 }}
-                onClick={async () => {
-                  const res = await createordersession();
-                  if (res?.success && res.data?.sessionUrl) {
-                    window.location.href = res.data.sessionUrl;
-                  } else {
-                    navigate('/checkout');
-                  }
-                }}
+                onClick={() => navigate('/checkout')}
                 className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-[#c2b090] transition-all duration-500 shadow-lg shadow-slate-200"
               >
                 Checkout Now <ArrowRight size={20} />

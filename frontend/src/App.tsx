@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import SignUpPage from './pages/SignUpPage'
@@ -10,6 +9,8 @@ import CategoryPage from './pages/CategoryPage'
 import ItemPage from './pages/ItemPage'
 import ScrollToTop from './components/ScrollToTop'
 import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
+import OrderSuccessPage from './pages/OrderSuccessPage'
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
       <Route path='/category/:name' element={<CategoryPage></CategoryPage>}></Route>
       <Route path='/item/:id' element={<ItemPage></ItemPage>}></Route>
       <Route path='/cart' element={<CartPage></CartPage>}></Route>
+      <Route path='/checkout' element={<CheckoutPage></CheckoutPage>}></Route>
+      <Route path='/order-success' element={<OrderSuccessPage></OrderSuccessPage>}></Route>
     </Routes>
     
    

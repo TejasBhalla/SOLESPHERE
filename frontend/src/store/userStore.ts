@@ -293,13 +293,27 @@ export const useUserStore = create((set) => ({
   createordersession: async () => {
     set({ isLoading: true, error: null })
     try {
-      const res = await api.get('/order')
-      const data = Array.isArray(res.data) ? res.data : res.data
-      if (Array.isArray(data)) {
-        set({ orders: data, isLoading: false })
-      } else {
-        set({ isLoading: false })
-      }
+      const res = await api.post('/order/create-checkout-session')
+      const data = res.data
+      set({ isLoading: false })
+      return { success: true, data }
+    } catch (error) {
+      const message = getErrorMessage(error)
+      set({ isLoading: false, error: message })
+      return { success: false, message }
+    }
+  },
+
+  confirmordersuccess: async (sessionId) => {
+    set({ isLoading: true, error: null })
+    try {
+      const res = await api.post('/order/checkout-success', { sessionId })
+      const data = res.data
+      set((state) => ({
+        cart: [],
+        orders: data?.order ? [...state.orders, data.order] : state.orders,
+        isLoading: false,
+      }))
       return { success: true, data }
     } catch (error) {
       const message = getErrorMessage(error)
