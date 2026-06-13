@@ -16,4 +16,5 @@ export const getStripeClient = () => {
 
 	stripeClient = new Stripe(secretKey)
 	return stripeClient
+	
 }
